@@ -1,0 +1,81 @@
+html {
+    height: 100%;
+}
+
+body {
+    padding: unset;
+    margin: unset;
+    height: 100%;
+    background-size: 100% 100%;
+    background-position: 0px 0px;
+    background-image: radial-gradient(75% 75% at 50% 48%, #00FFFFFF 0%, #222221FF 0%, #040404 100%);
+}
+
+main {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lists {
+    max-width: 600px;
+    min-width: 600px;
+    backdrop-filter: blur(15px);
+    background: #8080802e;
+    border-radius: 12px;
+    border: solid 1px #80808052;
+}
+
+.inner {
+    padding: 6px 12px;
+}
+
+.lists h2 {
+    margin: unset;
+    color: white;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 2px;
+    gap: 1rem;
+}
+
+.list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 6px;
+    border-bottom: solid 1px #80808052;
+}
+
+.list-icon {
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+.list-content {
+    width: 70%;
+    color: white;
+    padding-left: 6px;
+}
+
+.list-actions {
+    width: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+h3 {
+    margin: unset;
+}
+
+p {
+    margin: unset;
+}
