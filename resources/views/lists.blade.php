@@ -12,6 +12,25 @@
     <!-- Main Container -->
     <main>
 
+
+        <!-- Navigation -->
+        <nav>
+            <div class="inner">
+                <h1>Godo</h1>
+                
+                <div class="nav-item">
+                    <a href="" class="action delete">
+                        <span class="material-symbols-outlined">
+                            save
+                        </span>
+                    </a>
+                </div>
+
+            </div>
+        </nav>
+
+
+
         <!-- Container of List Category -->
         <div class="lists">
             <div class="inner">
