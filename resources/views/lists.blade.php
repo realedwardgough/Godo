@@ -17,15 +17,6 @@
         <nav>
             <div class="inner">
                 <h1>Godo</h1>
-                
-                <div class="nav-item">
-                    <a href="" class="action delete">
-                        <span class="material-symbols-outlined">
-                            save
-                        </span>
-                    </a>
-                </div>
-
             </div>
         </nav>
 
@@ -51,18 +42,45 @@
                             </span>
                         </div>
                         <div class="list-content">
-                            <h3>Task 1</h3>
-                            <p>Task 1 description</p>
+                            <h3 contenteditable>Task 2</h3>
+                            <p contenteditable>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget.</p>
+                            <div class="list-additional">
+                                <span class="material-symbols-outlined">
+                                    calendar_today
+                                </span>
+                                <h4>04/01/2025</h4>
+                            </div>
                         </div>
                         <div class="list-actions">
-                            <button class="action edit">
-                                <span class="material-symbols-outlined">
-                                    edit
-                                </span>
-                            </button>
                             <button class="action delete">
                                 <span class="material-symbols-outlined">
-                                    delete
+                                    close
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Closed Single List Item -->
+                    <div class="list-item closed">
+                        <div class="list-icon">
+                            <span class="material-symbols-outlined">
+                                check_box
+                            </span>
+                        </div>
+                        <div class="list-content">
+                            <h3 contenteditable>Task 1</h3>
+                            <p contenteditable>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget.</p>
+                            <div class="list-additional">
+                                <span class="material-symbols-outlined">
+                                    calendar_today
+                                </span>
+                                <h4>02/01/2025</h4>
+                            </div>
+                        </div>
+                        <div class="list-actions">
+                            <button class="action delete">
+                                <span class="material-symbols-outlined">
+                                    close
                                 </span>
                             </button>
                         </div>
@@ -70,6 +88,16 @@
 
                 </div>
 
+            </div>
+        </div>
+
+
+
+        <!-- Container QR Code -->
+        <div class="qrcode-container">
+            <div class="inner">
+                <h3>Scan the code to access from anywhere</h3>
+                <img src="{{ asset('media/download/example-qrcode.png') }}" alt="QR Code">
             </div>
         </div>
         
