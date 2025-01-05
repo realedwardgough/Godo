@@ -16,9 +16,14 @@ body {
     padding: unset;
     margin: unset;
     height: 100%;
+    background: rgb(44,61,62);
+    background: -moz-linear-gradient(0deg, rgba(44,61,62,1) 0%, rgba(39,48,48,1) 47%, rgba(36,36,36,1) 100%);
+    background: -webkit-linear-gradient(0deg, rgba(44,61,62,1) 0%, rgba(39,48,48,1) 47%, rgba(36,36,36,1) 100%);
+    background: linear-gradient(0deg, rgba(44,61,62,1) 0%, rgba(39,48,48,1) 47%, rgba(36,36,36,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2c3d3e",endColorstr="#242424",GradientType=1);
+    background-repeat: no-repeat;
     background-size: 100% 100%;
-    background-position: 0px 0px;
-    background-image: radial-gradient(75% 75% at 50% 48%, #00FFFFFF 0%, #222221FF 0%, #040404 100%);
+    background-attachment: fixed;
     font-family: var(--font);
     font-optical-sizing: auto;
     font-weight: 300;
@@ -55,10 +60,16 @@ nav h1 {
     opacity: 0.1;
 }
 
+
 nav .inner {
     gap: 3rem;
     display: flex;
     flex-direction: column;
+}
+
+nav img {
+    width: 250px;
+    align-self: center;
 }
 
 .nav-item {
@@ -72,10 +83,7 @@ nav .inner {
 .lists {
     max-width: 600px;
     min-width: 600px;
-    backdrop-filter: blur(15px);
-    /* background: #8080802e; */
     border-radius: 12px;
-    /* border: solid 1px #80808052; */
 }
 
 .inner {
@@ -153,6 +161,31 @@ nav .inner {
     padding-right: 6px;
 }
 
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.button.remove {
+    text-decoration: none;
+    border: solid 1px #80808045;
+    padding: 4px;
+    border-radius: 50px;
+    min-width: 80px;
+    height: 14px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: #80808082;
+}
+
+.button.remove:hover {
+    color: #808080c4;
+}
+
 h3 {
     margin: unset;
 }
@@ -207,4 +240,29 @@ button:hover {
 
 .qrcode-container:hover {
     opacity: 1;
+}
+
+
+
+
+/*
+ * Mobile Styling
+ */
+@media (max-width: 500px) {
+
+    nav,
+    .lists {
+        max-width: unset;
+        min-width: unset;
+        width: 100%;
+        width: -webkit-fill-available;
+    }
+
+    nav h1 {
+        letter-spacing: 55px;
+    }
+
+    .qrcode-container {
+        position: relative;
+    }
 }
