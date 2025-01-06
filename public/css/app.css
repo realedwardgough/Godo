@@ -169,7 +169,14 @@ header {
     justify-content: space-between;
 }
 
-.button.remove {
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button.remove,
+.button.menu-item {
     text-decoration: none;
     border: solid 1px #80808045;
     padding: 4px;
@@ -182,7 +189,8 @@ header {
     color: #80808082;
 }
 
-.button.remove:hover {
+.button.remove:hover,
+.button.menu-item:hover {
     color: #808080c4;
 }
 

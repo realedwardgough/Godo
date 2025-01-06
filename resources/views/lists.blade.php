@@ -18,6 +18,15 @@
             <div class="inner">
                 <h1 style="display:none;">Godo</h1>
                 <img src="{{ asset('media/download/godo-logo.png') }}" alt="">
+
+                <div class="menu">
+                    <a class="button menu-item" href="">
+                        <span class="material-symbols-outlined">
+                            arrow_drop_down
+                        </span>
+                    </a>
+                </div>
+
             </div>
         </nav>
 
