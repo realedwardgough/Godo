@@ -251,7 +251,20 @@ button:hover {
     opacity: 1;
 }
 
+.placeholder-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border-bottom: none;
+    color: #808080e0;
+    cursor: pointer;
+}
 
+.placeholder-add .button {
+    color: #808080e8;
+}
 
 
 /*
