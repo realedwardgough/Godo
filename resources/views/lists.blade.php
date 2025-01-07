@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Godo: Easy To-Do List Manager</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset(path: 'css/app.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
 <body>
@@ -35,66 +35,40 @@
                 </header>
 
                 <!-- Container for each list item -->
-                <div class="list">
-                   
-                    <!-- Single List Item -->
-                    <div class="list-item">
-                        <div class="list-icon">
-                            <span class="material-symbols-outlined">
-                                check_box_outline_blank
-                            </span>
-                        </div>
-                        <div class="list-content">
-                            <h3 contenteditable>Task 2</h3>
-                            <p contenteditable>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget.</p>
-                            <div class="list-additional">
-                                <span class="material-symbols-outlined">
-                                    calendar_today
-                                </span>
-                                <h4>04/01/2025</h4>
-                            </div>
-                        </div>
-                        <div class="list-actions">
-                            <a class="action delete">
-                                <span class="material-symbols-outlined">
-                                    close
-                                </span>
-                            </a>
-                        </div>
-                    </div>
+                <div class="list" data-list-id="1">
 
-                    <!-- Closed Single List Item -->
-                    <div class="list-item closed">
-                        <div class="list-icon">
-                            <span class="material-symbols-outlined">
-                                check_box
-                            </span>
-                        </div>
-                        <div class="list-content">
-                            <h3 contenteditable>Task 1</h3>
-                            <p contenteditable>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget.</p>
-                            <div class="list-additional">
-                                <span class="material-symbols-outlined">
-                                    calendar_today
-                                </span>
-                                <h4>02/01/2025</h4>
-                            </div>
-                        </div>
-                        <div class="list-actions">
-                            <a class="action delete">
-                                <span class="material-symbols-outlined">
-                                    close
-                                </span>
-                            </a>
-                        </div>
-                    </div>
+
+                    <!-- List Items -->
+                    <x-list-item
+                        list_status="open"
+                        list_icon="check_box_outline_blank"
+                        list_content_header="Task 2"
+                        list_content_body="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget."
+                        list_content_date="04/01/2025"
+                        list_id="1"
+                        list_item_id="2"
+                    ></x-list-item>
+                    <x-list-item
+                        list_status="closed"
+                        list_icon="check_box_outline_blank"
+                        list_content_header="Task 1"
+                        list_content_body="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget."
+                        list_content_date="02/01/2025"
+                        list_id="1"
+                        list_item_id="1"
+                    ></x-list-item>
+                    
 
                     <!-- Create New List Item -->
-                    <a class="list-item placeholder-add">
+                    <button 
+                        class="list-item placeholder-add create-list-item-button"
+                        data-list="Default List"
+                        data-listid="1">
+                        <meta name="csrf-token" content="{{ csrf_token() }}">
                         <span class="material-symbols-outlined">
                             add
                         </span>
-                    </a>
+                    </button>
 
                 </div>
 
@@ -110,6 +84,9 @@
         </div>
         
     </main>
+
+    <!-- Godo Scripts -->
+    <script src="{{ asset(path: 'js/godo.js') }}"></script>
 
 </body>
 </html>
