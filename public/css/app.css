@@ -219,6 +219,7 @@ button:hover {
 
 .delete {
     color: #f44336ad;
+    cursor: pointer;
 }
 
 .qrcode-container {
