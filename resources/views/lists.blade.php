@@ -23,58 +23,52 @@
         <!-- Container of List Category -->
         <div class="lists">
             
-            <!-- Default List -->
-            <div class="inner">
+            
 
-                <!-- Header of List Category -->
-                <header>
-                    <h2 contenteditable>Default List</h2>
-                    <a class="button remove" href="">
-                        Remove
-                    </a>
-                </header>
+            <!-- Container for each list item -->
+            @foreach($user->lists as $list)
 
-                <!-- Container for each list item -->
-                <div class="list" data-list-id="1">
+                <!-- Default List -->
+                <div class="inner">
 
+                    <!-- Header of List Category -->
+                    <header>
+                        <h2 contenteditable>{{ $list->title }}</h2>
+                        <a class="button remove" href="">
+                            Remove
+                        </a>
+                    </header>
 
-                    <!-- List Items -->
-                    <x-list-item
-                        list_status="open"
-                        list_icon="check_box_outline_blank"
-                        list_content_header="Task 2"
-                        list_content_body="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget."
-                        list_content_date="04/01/2025"
-                        list_id="1"
-                        list_item_id="2"
-                    ></x-list-item>
-                    <x-list-item
-                        list_status="closed"
-                        list_icon="check_box_outline_blank"
-                        list_content_header="Task 1"
-                        list_content_body="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie, felis id commodo posuere, lorem ligula dignissim justo, quis cursus nisl velit vestibulum nisl. Vestibulum tristique finibus justo, sed placerat magna placerat a. In dictum aliquam nibh in vehicula. Etiam a suscipit dolor, non fermentum justo. Morbi laoreet purus libero, ut gravida ipsum malesuada eget."
-                        list_content_date="02/01/2025"
-                        list_id="1"
-                        list_item_id="1"
-                    ></x-list-item>
-                    
+                    <div class="list" data-list-id="{{ $list->id }}">    
 
-                    <!-- Create New List Item -->
-                    <button 
-                        class="list-item placeholder-add create-list-item-button"
-                        data-list="Default List"
-                        data-listid="1">
-                        <meta name="csrf-token" content="{{ csrf_token() }}">
-                        <span class="material-symbols-outlined">
-                            add
-                        </span>
-                    </button>
+                        <!-- List Items -->
+                        @foreach($list->listItems as $listItem)
+                            <x-list-item
+                                list_status="open"
+                                list_icon="check_box_outline_blank"
+                                list_content_header="{{ $listItem->title }}"
+                                list_content_body="{{ $listItem->content }}"
+                                list_content_date="04/01/2025"
+                                list_id="{{ $list->id }}"
+                                list_item_id="{{ $listItem->id }}"
+                            ></x-list-item>
+                        @endforeach
 
+                        <!-- Create New List Item -->
+                        <button 
+                            class="list-item placeholder-add create-list-item-button"
+                            data-list="Default List"
+                            data-listid="1">
+                            <meta name="csrf-token" content="{{ csrf_token() }}">
+                            <span class="material-symbols-outlined">
+                                add
+                            </span>
+                        </button>
+                    </div>
                 </div>
+            @endforeach
 
-            </div>
-
-        </div>
+        </div>  
 
         <!-- Container QR Code -->
         <div class="qrcode-container">
