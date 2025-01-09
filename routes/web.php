@@ -7,6 +7,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\UniqueSession;
 use App\Models\User;
+use App\Http\Controllers\ListItems;
 
 /**
  * Web Routes for the Application
@@ -45,7 +46,7 @@ Route::middleware( UniqueSession::class )->group(function () {
      * Application Lists Retrieve
      * Middleware: UniqueSession
      * Route name: 'retrieve'
-     * Route URI: '/'
+     * Route URI: '/retrieve/{uniqueId}'
      * Description: This route renders passed unique session id
      * to enabled updated session to view previous to-do list items.
      */
@@ -59,6 +60,17 @@ Route::middleware( UniqueSession::class )->group(function () {
         // Return route view lists with user information
         return redirect()->route('lists');
     })->name('retrieve');
+
+
+    /**
+     * Application Lists Retrieve
+     * Middleware: UniqueSession
+     * Route name: 'create.list-item'
+     * Route URI: '/create/list-item'
+     * Description: This route renders passed unique session id
+     * to enabled updated session to view previous to-do list items.
+     */
+    Route::post('/create/list-item', [ListItems::class, 'Create'])->name('create.list-item');
 
 
 });

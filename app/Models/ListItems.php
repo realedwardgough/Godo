@@ -10,6 +10,7 @@ class ListItems extends Model
     
     // Renaming of ListItems table
     protected $table = 'list_item';
+    public $timestamps = false;
 
 
     /**

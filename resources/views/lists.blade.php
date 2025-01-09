@@ -6,6 +6,10 @@
     <title>Godo: Easy To-Do List Manager</title>
     <link rel="stylesheet" href="{{ asset(path: 'css/app.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
 <body>
     
@@ -41,18 +45,20 @@
 
                     <div class="list" data-list-id="{{ $list->id }}">    
 
-                        <!-- List Items -->
-                        @foreach($list->listItems as $listItem)
-                            <x-list-item
-                                list_status="open"
-                                list_icon="check_box_outline_blank"
-                                list_content_header="{{ $listItem->title }}"
-                                list_content_body="{{ $listItem->content }}"
-                                list_content_date="04/01/2025"
-                                list_id="{{ $list->id }}"
-                                list_item_id="{{ $listItem->id }}"
-                            ></x-list-item>
-                        @endforeach
+                        <div class="list-container" data-listid="{{ $list->id }}">
+                            <!-- List Items -->
+                            @foreach($list->listItems as $listItem)
+                                <x-list-item
+                                    list_status="open"
+                                    list_icon="check_box_outline_blank"
+                                    list_content_header="{{ $listItem->title }}"
+                                    list_content_body="{{ $listItem->content }}"
+                                    list_content_date="04/01/2025"
+                                    list_id="{{ $list->id }}"
+                                    list_item_id="{{ $listItem->id }}"
+                                ></x-list-item>
+                            @endforeach
+                        </div>
 
                         <!-- Create New List Item -->
                         <button 
