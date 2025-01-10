@@ -7,7 +7,7 @@
     'list_content_date',
     'list_id',
     'list_item_id'
-]);
+])
 
 <!-- Single List Item -->
 <div class="list-item {{ $list_status }}" data-list-item-id="{{ $list_item_id }}">

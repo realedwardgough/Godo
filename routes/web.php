@@ -72,5 +72,15 @@ Route::middleware( UniqueSession::class )->group(function () {
      */
     Route::post('/create/list-item', [ListItems::class, 'Create'])->name('create.list-item');
 
+    /**
+     * Application Lists Retrieve
+     * Middleware: UniqueSession
+     * Route name: 'delete.list-item'
+     * Route URI: '/delete/list-item'
+     * Description: This route renders passed unique session id
+     * to enabled updated session to view previous to-do list items.
+     */
+    Route::post('/delete/list-item', [ListItems::class, 'Delete'])->name('delete.list-item');
+
 
 });

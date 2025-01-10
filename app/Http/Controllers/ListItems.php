@@ -86,9 +86,74 @@ class ListItems extends Controller
         return response()->json([
             'status' => 1,
             'message' => 'List item created. (' . $listItem->id . ')',
-            'html' => $html
+            'reaction' => [
+                0 => [
+                    'type' => 'insertAdjacentHTML',
+                    'tag' => '.list-container[data-listid="'.$list->id.'"]',
+                    'value' => $html
+                ],
+                1 => [
+                    'type' => 'console',
+                    'value' => 'List item created. (' . $listItem->id . ')'
+                ]
+            ]
         ]);
     }
+
+
+    /**
+     * Removes list item and the html for it
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     * 
+     */
+    public function Delete(Request $request) {
+
+        // Store localised unique session id
+        $uniqueId = session('unique_session_id');
+        
+        // Check if unique session id hasn't been set
+        if (empty($uniqueId)) {
+            return response()->json([
+                'status' => 2,
+                'message' => 'User session has not been found.',
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => 'User session has not been found.'
+                    ]
+                ]
+            ]);
+        }
+
+        // Validate that a list id has been passed through the request
+        $request->validate([
+            'listItemId' => 'required|integer|exists:list_item,id',
+        ]);
+
+        //
+        $listItem = ListItem::find($request->listItemId);
+        $listItem->delete();
+
+        // Return successfully with the x compontent removed from dom
+        return response()->json([
+            'status' => 1,
+            'message' => 'List item removed. (' . $request->listItemId . ')',
+            'reaction' => [
+                0 => [
+                    'type' => 'remove',
+                    'tag' => '[data-list-item-id="'.$request->listItemId.'"]'
+                ],
+                1 => [
+                    'type' => 'console',
+                    'value' => 'List item removed. (' . $request->listItemId . ')'
+                ]
+            ]
+        ]);
+
+    }
+
 
 }
 

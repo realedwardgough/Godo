@@ -21,7 +21,15 @@ console.log('Godo To-Do List Web Application - 07/01/2025');
 function RequestHandler(action = '', data = {}) {
 
     // 
-    let url = '/create/list-item';
+    let url;
+
+    // 
+    if (action == 'create') {
+        url = '/create/list-item';
+    }
+    else if (action == 'delete') {
+        url = '/delete/list-item';
+    }
 
     // 
     axios.post(url, data, {
@@ -30,17 +38,40 @@ function RequestHandler(action = '', data = {}) {
         }
     })
     .then(response => {
-        console.log(response.data.message);
-
-        // Target the element with class 'list-container' and data-listid="1"
-        if(response.data.html) {
-            document.querySelector('.list-container[data-listid="'+data.listId+'"]').insertAdjacentHTML('beforeend', response.data.html);
-        }
-
+        ResponseHandler(response);
     })
     .catch(error => {
         console.error('Error:', error.response);
     });
+}
+
+function ResponseHandler(data = {}) {
+    
+
+    // 
+    data.data.reaction.forEach(function(item) {
+
+        console.log(item);
+        console.log(item.type);
+
+        // Push HTML into the end of a section
+        if (item.type == 'insertAdjacentHTML') {
+            document.querySelector(item.tag).insertAdjacentHTML('beforeend', item.value);
+        }
+
+        // Remove HTML element from DOM
+        if (item.type == 'remove') {
+            document.querySelector(item.tag).remove();
+        }
+
+        // Display console log
+        if (item.type == 'console') {
+            console.log(item.value);
+        }
+
+
+    });
+
 }
 
 
@@ -60,34 +91,29 @@ function ListItemController (element, request) {
 
     // Request to create a new list item from the selected list stack
     if (request == 'create') {
-        console.log('You want to create a new list item for ' + listId);
         RequestHandler(request, data);
     }
 
     // Request to delete a list item, and the list item was selected
     else if (request == 'delete') {
-        console.log('You want to delete a list item (' + listItemId + ') for ' + listId);
+        console.log(data);
+        RequestHandler(request, data);
     }
 
 }
 
 
-/**
- * Event Listener
- * Description: ...
- */
-document.querySelectorAll('.create-list-item-button').forEach(function(element) {
-    element.addEventListener('click', function() {
-        ListItemController(this, 'create');
-    });
-});
+// Attaching the event listener to the document (or a stable parent)
+document.body.addEventListener('click', function(event) {
+    
+    // Check if the clicked element matches the selector
+    if (event.target.closest('.delete-list-item-button')) {
+        ListItemController(event.target, 'delete');
+    }
 
-/**
- * Event Listener
- * Description: ...
- */
-document.querySelectorAll('.delete-list-item-button').forEach(function(element) {
-    element.addEventListener('click', function() {
-        ListItemController(this, 'delete');
-    });
+    // Check if the clicked element matches the selector
+    if (event.target.closest('.create-list-item-button')) {
+        ListItemController(event.target, 'create');
+    }
+
 });
