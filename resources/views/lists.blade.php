@@ -47,10 +47,12 @@
 
                         <div class="list-container" data-listid="{{ $list->id }}">
                             <!-- List Items -->
-                            @foreach($list->listItems as $listItem)
+                            @foreach($list->listItems->sortByDesc(function($item) {
+                                return $item->status == 1 ? 1 : 0;
+                            }) as $listItem)
                                 <x-list-item
-                                    list_status="open"
-                                    list_icon="check_box_outline_blank"
+                                    list_status="{{ $listItem->status == 1 ? 'open' : ($listItem->status == 2 ? 'closed' : '') }}"
+                                    list_icon="{{ $listItem->status == 1 ? 'check_box_outline_blank' : ($listItem->status == 2 ? 'check_box' : '') }}"
                                     list_content_header="{{ $listItem->title }}"
                                     list_content_body="{{ $listItem->content }}"
                                     list_content_date="04/01/2025"

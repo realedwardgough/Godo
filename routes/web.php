@@ -39,7 +39,7 @@ Route::middleware( UniqueSession::class )->group(function () {
         }
         
         // Generate the QR code linking to their unique URL
-        $qrCode = QrCode::size(100)->generate(url('/retrieve/' . $uniqueId));
+        $qrCode = QrCode::size(100)->generate(url('/retrieve/' . $uniqueId)); 
 
         // Return route view lists with user information
         return view('lists', ['user' => $user, 'qrCode' => $qrCode]);
@@ -95,6 +95,16 @@ Route::middleware( UniqueSession::class )->group(function () {
      * to enabled updated session to view previous to-do list items.
      */
     Route::post('/edit/list-item', [ListItems::class, 'Edit'])->name('edit.list-item');
+
+    /**
+     * Application Lists Retrieve
+     * Middleware: UniqueSession
+     * Route name: 'status.list-item'
+     * Route URI: '/status/list-item'
+     * Description: This route renders passed unique session id
+     * to enabled updated session to view previous to-do list items.
+     */
+    Route::post('/status/list-item', [ListItems::class, 'Status'])->name('status.list-item');
 
 
 });

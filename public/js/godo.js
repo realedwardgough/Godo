@@ -34,6 +34,9 @@ function RequestHandler(action = '', data = {}) {
         case 'edit':
             url = '/edit/list-item';
             break;
+        case 'status':
+            url = '/status/list-item';
+            break;
     }
 
     // 
@@ -71,6 +74,11 @@ function ResponseHandler(data = {}) {
         // Display console log
         if (item.type == 'console') {
             console.log(item.value);
+        }
+
+        // Replace element with new HTML
+        if (item.type == 'replaceElement') {
+            document.querySelector(item.tag).outerHTML = item.value;
         }
 
     });
@@ -114,6 +122,12 @@ function ListItemController (element, event, request) {
         RequestHandler(request, data);
     }
 
+    //
+    else if (request == 'status') {
+        data.status = element?.getAttribute('data-status');
+        RequestHandler(request, data);
+    }
+
 }
 
 
@@ -128,6 +142,11 @@ document.body.addEventListener('click', function(event) {
     // Check if the clicked element matches the selector
     if (event.target.closest('.create-list-item-button')) {
         ListItemController(event.target, event, 'create');
+    }
+
+    // Check if the clicked element matches the selector
+    if (event.target.closest('[data-content="complete-item"]')) {
+        ListItemController(event.target, event, 'status');
     }
 
 });

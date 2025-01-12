@@ -12,7 +12,7 @@
 <!-- Single List Item -->
 <div class="list-item {{ $list_status }}" data-list-item-id="{{ $list_item_id }}">
     <div class="list-icon">
-        <span class="material-symbols-outlined">
+        <span class="material-symbols-outlined" data-content="complete-item" data-status="{{ $list_status }}">
             {{ $list_icon }}
         </span>
     </div>

@@ -222,6 +222,91 @@ class ListItems extends Controller
 
     }
 
+    /**
+     * Updates list item status and the html for it
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     * 
+     */
+    public function Status(Request $request) {
+
+        // Check users access rights for the list and list item
+        $userAccess = $this->CheckUserHasAccessToList($request);
+
+        // Failed access rights, return error and console
+        if ($userAccess['status'] != 1) {
+            return response()->json([
+                'status' => $userAccess['status'],
+                'message' => $userAccess['message'],
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => $userAccess['message']
+                    ]
+                ]
+            ]);
+        }
+
+        // Validate that a list id has been passed through the request
+        $list = $userAccess['list'];
+        $request->validate([
+            'listItemId' => 'required|integer|exists:list_item,id',
+        ]);
+
+        // Search for the list item which is to be deleted and confirm user has access to this
+        $listItem = ListItem::where('id', $request->listItemId)
+                ->where('list_id', $list->id)
+                ->first();
+
+        // Access missing and must throw error and show console message
+        if (!$listItem) {
+            return response()->json([
+                'status' => 2,
+                'message' => 'Access Denied',
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => 'Access Denied'
+                    ]
+                ]
+            ]);
+        }
+
+        // Found and not returned early, list is applicable for deletion
+        $listItem->status = $request->status == 'open' ? 2 : ($request->status == 'closed' ? 1 : 1);
+        $listItem->save();
+
+        // Render the Blade component and return as a string
+        $html = view('components.list-item', [
+            'list_status' => $request->status == 'open' ? 'closed' : ($request->status == 'closed' ? 'open' : 'open'),
+            'list_icon' => $request->status == 'open' ? 'check_box' : ($request->status == 'closed' ? 'check_box_outline_blank' : 'check_box_outline_blank'),
+            'list_content_header' => $listItem->title,
+            'list_content_body' => $listItem->content,
+            'list_content_date' => 'N/A',
+            'list_id' => $list->id,
+            'list_item_id' => $listItem->id
+        ])->render();
+
+        // Return successfully with the x compontent removed from dom
+        return response()->json([
+            'status' => 1,
+            'message' => 'List item status updated. (' . $request->listItemId . ')',
+            'reaction' => [
+                0 => [
+                    'type' => 'replaceElement',
+                    'tag' => '[data-list-item-id="'.$request->listItemId.'"]',
+                    'value' => $html
+                ],
+                1 => [
+                    'type' => 'console',
+                    'value' => 'List item status updated. (' . $request->listItemId . ')'
+                ]
+            ]
+        ]);
+
+    }
+
 
     /**
      * Confirms that the user has access to the list item or list

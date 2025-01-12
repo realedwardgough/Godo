@@ -135,10 +135,11 @@ nav img {
 }
 
 .list-content p {
-    white-space: nowrap;
+    white-space: break-spaces;
     overflow: hidden;
-    text-overflow: ellipsis;
-    color: #c3c1c1
+    color: #c3c1c1;
+    display: flex;
+    line-height: 16px;
 }
 
 .list-additional {
