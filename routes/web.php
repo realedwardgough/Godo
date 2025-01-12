@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\UniqueSession;
 use App\Models\User;
 use App\Http\Controllers\ListItems;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
  * Web Routes for the Application
@@ -37,8 +38,11 @@ Route::middleware( UniqueSession::class )->group(function () {
                 ->first();
         }
         
+        // Generate the QR code linking to their unique URL
+        $qrCode = QrCode::size(100)->generate(url('/retrieve/' . $uniqueId));
+
         // Return route view lists with user information
-        return view('lists', ['user' => $user]);
+        return view('lists', ['user' => $user, 'qrCode' => $qrCode]);
     })->name('lists');
 
 

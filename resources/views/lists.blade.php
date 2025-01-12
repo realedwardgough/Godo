@@ -84,8 +84,7 @@
         <!-- Container QR Code -->
         <div class="qrcode-container">
             <div class="inner">
-                <img src="{{ asset('media/download/example-qrcode.png') }}" alt="QR Code">
-                <p>{{ session('unique_session_id') }}</p>
+                {!! $qrCode !!}
             </div>
         </div>
         
