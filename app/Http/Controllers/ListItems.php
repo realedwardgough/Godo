@@ -22,46 +22,25 @@ class ListItems extends Controller
     public function Create(Request $request) {
         
         
-        // Store localised unique session id
-        $uniqueId = session('unique_session_id');
-        
-        // Check if unique session id hasn't been set
-        if (empty($uniqueId)) {
+        //
+        $userAccess = $this->CheckUserHasAccessToList($request);
+
+        //
+        if ($userAccess['status'] != 1) {
             return response()->json([
-                'status' => 2,
-                'message' => 'User session has not been found.'
+                'status' => $userAccess['status'],
+                'message' => $userAccess['message'],
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => $userAccess['message']
+                    ]
+                ]
             ]);
         }
 
-        // Validate that a list id has been passed through the request
-        $request->validate([
-            'listId' => 'required',
-        ]);
-
-        // Handle unique session id and fetch user information
-        $user = User::where('unique', $uniqueId)
-                ->first();
-
-        // Check for mismatch of user account
-        if (empty($user)) {
-            return response()->json([
-                'status' => 2,
-                'message' => 'User has not been found.'
-            ]);
-        }
-
-        // Confirm that the user account is associated with the list 
-        $list = Lists::where('user_id', $user->id)
-                ->where('id', $request->listId)
-                ->first();
-
-        // Check for mismatch of user to list
-        if (empty($list)) {
-            return response()->json([
-                'status' => 2,
-                'message' => 'List has not been found.'
-            ]);
-        }
+        //
+        $list = $userAccess['list'];
 
         // Create new list item in the database
         $listItem = new ListItem();
@@ -110,30 +89,49 @@ class ListItems extends Controller
      */
     public function Delete(Request $request) {
 
-        // Store localised unique session id
-        $uniqueId = session('unique_session_id');
-        
-        // Check if unique session id hasn't been set
-        if (empty($uniqueId)) {
+        // Check users access rights for the list and list item
+        $userAccess = $this->CheckUserHasAccessToList($request);
+
+        // Failed access rights, return error and console
+        if ($userAccess['status'] != 1) {
             return response()->json([
-                'status' => 2,
-                'message' => 'User session has not been found.',
+                'status' => $userAccess['status'],
+                'message' => $userAccess['message'],
                 'reaction' => [
                     0 => [
                         'type' => 'console',
-                        'value' => 'User session has not been found.'
+                        'value' => $userAccess['message']
                     ]
                 ]
             ]);
         }
 
         // Validate that a list id has been passed through the request
+        $list = $userAccess['list'];
         $request->validate([
             'listItemId' => 'required|integer|exists:list_item,id',
         ]);
 
-        //
-        $listItem = ListItem::find($request->listItemId);
+        // Search for the list item which is to be deleted and confirm user has access to this
+        $listItem = ListItem::where('id', $request->listItemId)
+                ->where('list_id', $list->id)
+                ->first();
+
+        // Access missing and must throw error and show console message
+        if (!$listItem) {
+            return response()->json([
+                'status' => 2,
+                'message' => 'Access Denied',
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => 'Access Denied'
+                    ]
+                ]
+            ]);
+        }
+
+        // Found and not returned early, list is applicable for deletion
         $listItem->delete();
 
         // Return successfully with the x compontent removed from dom
@@ -163,54 +161,49 @@ class ListItems extends Controller
      */
     public function Edit(Request $request) {
 
-        // Store localised unique session id
-        $uniqueId = session('unique_session_id');
-        
-        // Check if unique session id hasn't been set
-        if (empty($uniqueId)) {
+        // Check users access rights for the list and list item
+        $userAccess = $this->CheckUserHasAccessToList($request);
+
+        // Failed access rights, return error and console
+        if ($userAccess['status'] != 1) {
             return response()->json([
-                'status' => 2,
-                'message' => 'User session has not been found.'
+                'status' => $userAccess['status'],
+                'message' => $userAccess['message'],
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => $userAccess['message']
+                    ]
+                ]
             ]);
         }
 
         // Validate that a list id has been passed through the request
-        $request->validate([
-            'listId' => 'required',
-        ]);
-
-        // Handle unique session id and fetch user information
-        $user = User::where('unique', $uniqueId)
-                ->first();
-
-        // Check for mismatch of user account
-        if (empty($user)) {
-            return response()->json([
-                'status' => 2,
-                'message' => 'User has not been found.'
-            ]);
-        }
-
-        // Confirm that the user account is associated with the list 
-        $list = Lists::where('user_id', $user->id)
-                ->where('id', $request->listId)
-                ->first();
-
-        // Check for mismatch of user to list
-        if (empty($list)) {
-            return response()->json([
-                'status' => 2,
-                'message' => 'List has not been found.'
-            ]);
-        }
-
-        // Validate that a list id has been passed through the request
+        $list = $userAccess['list'];
         $request->validate([
             'listItemId' => 'required|integer|exists:list_item,id',
         ]);
 
-        //
-        $listItem = ListItem::find($request->listItemId);
+        // Search for the list item which is to be edited and confirm user has access to this
+        $listItem = ListItem::where('id', $request->listItemId)
+                ->where('list_id', $list->id)
+                ->first();
+
+        // Access missing and must throw error and show console message
+        if (!$listItem) {
+            return response()->json([
+                'status' => 2,
+                'message' => 'Access Denied',
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => 'Access Denied'
+                    ]
+                ]
+            ]);
+        }
+
+        // Found and not returned early, list is applicable for edit
         $listItem->title = $request->title;
         $listItem->content = $request->content; 
         $listItem->save(); 
@@ -228,6 +221,69 @@ class ListItems extends Controller
         ]);
 
     }
+
+
+    /**
+     * Confirms that the user has access to the list item or list
+     * which has been selected for actionable request
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     * 
+     */
+    private function CheckUserHasAccessToList(Request $request) {
+        
+        // Store localised unique session id
+        $uniqueId = session('unique_session_id');
+        
+        // Check if unique session id hasn't been set
+        if (empty($uniqueId)) {
+            return [
+                'status' => 2,
+                'message' => 'User session has not been found.'
+            ];
+        }
+
+        // Validate that a list id has been passed through the request
+        $request->validate([
+            'listId' => 'required',
+        ]);
+
+        // Handle unique session id and fetch user information
+        $user = User::where('unique', $uniqueId)
+                ->first();
+
+        // Check for mismatch of user account
+        if (empty($user)) {
+            return [
+                'status' => 2,
+                'message' => 'User has not been found.'
+            ];
+        }
+
+        // Confirm that the user account is associated with the list 
+        $list = Lists::where('user_id', $user->id)
+                ->where('id', $request->listId)
+                ->first();
+
+        // Check for mismatch of user to list
+        if (empty($list)) {
+            return [
+                'status' => 2,
+                'message' => 'List has not been found.'
+            ];
+        }
+
+        // 
+        return [
+            'status' => 1,
+            'message' => 'User has access to selected list.',
+            'list' => $list
+        ];
+
+    }
+
+
 
 }
 
