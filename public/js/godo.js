@@ -24,11 +24,16 @@ function RequestHandler(action = '', data = {}) {
     let url;
 
     // 
-    if (action == 'create') {
-        url = '/create/list-item';
-    }
-    else if (action == 'delete') {
-        url = '/delete/list-item';
+    switch (action) {
+        case 'create':
+            url = '/create/list-item';
+            break;
+        case 'delete':
+            url = '/delete/list-item';
+            break;
+        case 'edit':
+            url = '/edit/list-item';
+            break;
     }
 
     // 
@@ -45,14 +50,13 @@ function RequestHandler(action = '', data = {}) {
     });
 }
 
+/**
+ * Function: ResponseHandler
+ * Description: ...
+ * @param {object} data
+ */
 function ResponseHandler(data = {}) {
-    
-
-    // 
     data.data.reaction.forEach(function(item) {
-
-        console.log(item);
-        console.log(item.type);
 
         // Push HTML into the end of a section
         if (item.type == 'insertAdjacentHTML') {
@@ -69,21 +73,24 @@ function ResponseHandler(data = {}) {
             console.log(item.value);
         }
 
-
     });
-
 }
 
 
 /**
  * Function: ListItemController
  * Description: ...
+ * @param {object} element
+ * @param {object} event
+ * @param {string} request
  */
-function ListItemController (element, request) {
+function ListItemController (element, event, request) {
     
+
     // Attribute collection for selected list item
     let listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
-    let listItemId = element.closest('[data-list-item-id]')?.getAttribute('data-list-item-id');
+    let listItemElement = event.target.closest('[data-list-item-id]');
+    let listItemId = listItemElement?.getAttribute('data-list-item-id');
     let data = {
         listId: listId,
         listItemId: listItemId
@@ -100,6 +107,13 @@ function ListItemController (element, request) {
         RequestHandler(request, data);
     }
 
+    //
+    else if (request == 'edit') {
+        data.title = listItemElement.querySelector('[data-content="list-item-title"]')?.textContent.trim();
+        data.content = listItemElement.querySelector('[data-content="list-item-content"]')?.textContent.trim();
+        RequestHandler(request, data);
+    }
+
 }
 
 
@@ -108,12 +122,28 @@ document.body.addEventListener('click', function(event) {
     
     // Check if the clicked element matches the selector
     if (event.target.closest('.delete-list-item-button')) {
-        ListItemController(event.target, 'delete');
+        ListItemController(event.target, event, 'delete');
     }
 
     // Check if the clicked element matches the selector
     if (event.target.closest('.create-list-item-button')) {
-        ListItemController(event.target, 'create');
+        ListItemController(event.target, event, 'create');
+    }
+
+});
+
+
+
+// Attaching the event listener to the document (or a stable parent)
+document.body.addEventListener('focusout', function(event) {
+
+    let titleEdit = event.target.matches('[data-content="list-item-title"]');
+    let contentEdit = event.target.matches('[data-content="list-item-content"]');
+    let listItemId = event.target.closest('[data-list-item-id]')?.getAttribute('data-list-item-id');
+    
+    //
+    if (titleEdit || contentEdit) {
+        ListItemController(event.target, event, 'edit');
     }
 
 });

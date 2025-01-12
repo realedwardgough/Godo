@@ -74,6 +74,11 @@
                 </div>
             @endforeach
 
+            
+            <a class="button remove" href="">
+                Create List
+            </a>
+
         </div>  
 
         <!-- Container QR Code -->

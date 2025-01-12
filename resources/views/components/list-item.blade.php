@@ -17,8 +17,8 @@
         </span>
     </div>
     <div class="list-content">
-        <h3 contenteditable>{{ $list_content_header }}</h3>
-        <p contenteditable>{{ $list_content_body }}</p>
+        <h3 contenteditable data-content="list-item-title" data-title="{{ $list_content_header }}">{{ $list_content_header }}</h3>
+        <p contenteditable data-content="list-item-content" data-content="{{ $list_content_body }}">{{ $list_content_body }}</p>
         <div class="list-additional">
             <span class="material-symbols-outlined">
                 calendar_today
