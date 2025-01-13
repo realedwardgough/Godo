@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\UniqueSession;
 use App\Models\User;
 use App\Http\Controllers\ListItems;
+use App\Http\Controllers\Lists;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
@@ -105,6 +106,17 @@ Route::middleware( UniqueSession::class )->group(function () {
      * to enabled updated session to view previous to-do list items.
      */
     Route::post('/status/list-item', [ListItems::class, 'Status'])->name('status.list-item');
+
+
+    /**
+     * Application Lists Retrieve
+     * Middleware: UniqueSession
+     * Route name: 'create.list'
+     * Route URI: '/create/list'
+     * Description: This route renders passed unique session id
+     * to enabled updated session to view previous to-do list items.
+     */
+    Route::post('/create/list', [Lists::class, 'Create'])->name('create.list');
 
 
 });

@@ -25,17 +25,20 @@ function RequestHandler(action = '', data = {}) {
 
     // 
     switch (action) {
-        case 'create':
+        case 'listItemCreate':
             url = '/create/list-item';
             break;
-        case 'delete':
+        case 'listItemDelete':
             url = '/delete/list-item';
             break;
-        case 'edit':
+        case 'listItemEdit':
             url = '/edit/list-item';
             break;
-        case 'status':
+        case 'listItemStatus':
             url = '/status/list-item';
+            break;
+        case 'listCreate':
+            url = '/create/list';
             break;
     }
 
@@ -104,29 +107,39 @@ function ListItemController (element, event, request) {
         listItemId: listItemId
     };
 
-    // Request to create a new list item from the selected list stack
-    if (request == 'create') {
-        RequestHandler(request, data);
-    }
-
-    // Request to delete a list item, and the list item was selected
-    else if (request == 'delete') {
-        console.log(data);
-        RequestHandler(request, data);
-    }
-
-    //
-    else if (request == 'edit') {
+    // Additional information required for list item edit action
+    if (request == 'listItemEdit') {
         data.title = listItemElement.querySelector('[data-content="list-item-title"]')?.textContent.trim();
         data.content = listItemElement.querySelector('[data-content="list-item-content"]')?.textContent.trim();
-        RequestHandler(request, data);
     }
 
-    //
-    else if (request == 'status') {
+    // Addtional information requried for list item status change
+    else if (request == 'listItemStatus') {
         data.status = element?.getAttribute('data-status');
-        RequestHandler(request, data);
+        
     }
+
+    // Trigger action through Axios
+    RequestHandler(request, data);
+
+}
+
+/**
+ * 
+ */
+function ListController (element, event, request) {
+    
+    //
+    let data = {};
+
+    //
+    if (request == 'listDelete') {
+        let listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
+        console.log('Should delete this: ' + listId);
+    }
+
+    // Trigger action through Axios
+    // RequestHandler(request, data);
 
 }
 
@@ -134,19 +147,33 @@ function ListItemController (element, event, request) {
 // Attaching the event listener to the document (or a stable parent)
 document.body.addEventListener('click', function(event) {
     
+
+    // --- List Items
     // Check if the clicked element matches the selector
     if (event.target.closest('.delete-list-item-button')) {
-        ListItemController(event.target, event, 'delete');
+        ListItemController(event.target, event, 'listItemDelete');
     }
 
     // Check if the clicked element matches the selector
     if (event.target.closest('.create-list-item-button')) {
-        ListItemController(event.target, event, 'create');
+        ListItemController(event.target, event, 'listItemCreate');
     }
 
     // Check if the clicked element matches the selector
     if (event.target.closest('[data-content="complete-item"]')) {
-        ListItemController(event.target, event, 'status');
+        ListItemController(event.target, event, 'listItemStatus');
+    }
+
+
+    // --- Lists
+    // Check if the clicked element matches the selector
+    if (event.target.closest('.create')) {
+        ListController(event.target, event, 'listCreate');
+    }
+
+    // Check if the clicked element matches the selector
+    if (event.target.closest('.remove')) {
+        ListController(event.target, event, 'listDelete');
     }
 
 });
@@ -155,14 +182,9 @@ document.body.addEventListener('click', function(event) {
 
 // Attaching the event listener to the document (or a stable parent)
 document.body.addEventListener('focusout', function(event) {
-
     let titleEdit = event.target.matches('[data-content="list-item-title"]');
     let contentEdit = event.target.matches('[data-content="list-item-content"]');
-    let listItemId = event.target.closest('[data-list-item-id]')?.getAttribute('data-list-item-id');
-    
-    //
     if (titleEdit || contentEdit) {
-        ListItemController(event.target, event, 'edit');
+        ListItemController(event.target, event, 'listItemEdit');
     }
-
 });

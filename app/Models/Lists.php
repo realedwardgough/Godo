@@ -9,6 +9,9 @@ use App\Models\ListItems;
 class Lists extends Model
 {
     
+    //
+    public $timestamps = false;
+
     /**
      * Connection of a list to a user
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -12,11 +12,7 @@
 
 </head>
 <body>
-    
-    <!-- Main Container -->
     <main>
-
-        <!-- Navigation -->
         <nav>
             <div class="inner">
                 <h1 style="display:none;">Godo</h1>
@@ -26,61 +22,57 @@
 
         <!-- Container of List Category -->
         <div class="lists">
-            
-            
+            <div class="lists-wrapper">
+                @foreach($user->lists as $list)
+                    <div class="inner">
 
-            <!-- Container for each list item -->
-            @foreach($user->lists as $list)
+                        <!-- Header of List Category -->
+                        <header>
+                            <h2 contenteditable>{{ $list->title }}</h2>
+                            <button class="button remove" data-list-id="{{ $list->id }}">
+                                Remove
+                            </button>
+                        </header>
 
-                <!-- Default List -->
-                <div class="inner">
+                        <div class="list" data-list-id="{{ $list->id }}">    
 
-                    <!-- Header of List Category -->
-                    <header>
-                        <h2 contenteditable>{{ $list->title }}</h2>
-                        <a class="button remove" href="">
-                            Remove
-                        </a>
-                    </header>
+                            <div class="list-container" data-listid="{{ $list->id }}">
+                                <!-- List Items -->
+                                @foreach($list->listItems->sortByDesc(function($item) {
+                                    return $item->status == 1 ? 1 : 0;
+                                }) as $listItem)
+                                    <x-list-item
+                                        list_status="{{ $listItem->status == 1 ? 'open' : ($listItem->status == 2 ? 'closed' : '') }}"
+                                        list_icon="{{ $listItem->status == 1 ? 'check_box_outline_blank' : ($listItem->status == 2 ? 'check_box' : '') }}"
+                                        list_content_header="{{ $listItem->title }}"
+                                        list_content_body="{{ $listItem->content }}"
+                                        list_content_date="04/01/2025"
+                                        list_id="{{ $list->id }}"
+                                        list_item_id="{{ $listItem->id }}"
+                                    ></x-list-item>
+                                @endforeach
+                            </div>
 
-                    <div class="list" data-list-id="{{ $list->id }}">    
-
-                        <div class="list-container" data-listid="{{ $list->id }}">
-                            <!-- List Items -->
-                            @foreach($list->listItems->sortByDesc(function($item) {
-                                return $item->status == 1 ? 1 : 0;
-                            }) as $listItem)
-                                <x-list-item
-                                    list_status="{{ $listItem->status == 1 ? 'open' : ($listItem->status == 2 ? 'closed' : '') }}"
-                                    list_icon="{{ $listItem->status == 1 ? 'check_box_outline_blank' : ($listItem->status == 2 ? 'check_box' : '') }}"
-                                    list_content_header="{{ $listItem->title }}"
-                                    list_content_body="{{ $listItem->content }}"
-                                    list_content_date="04/01/2025"
-                                    list_id="{{ $list->id }}"
-                                    list_item_id="{{ $listItem->id }}"
-                                ></x-list-item>
-                            @endforeach
+                            <!-- Create New List Item -->
+                            <button 
+                                class="list-item placeholder-add create-list-item-button"
+                                data-list="Default List"
+                                data-listid="1">
+                                <meta name="csrf-token" content="{{ csrf_token() }}">
+                                <span class="material-symbols-outlined">
+                                    add
+                                </span>
+                            </button>
                         </div>
-
-                        <!-- Create New List Item -->
-                        <button 
-                            class="list-item placeholder-add create-list-item-button"
-                            data-list="Default List"
-                            data-listid="1">
-                            <meta name="csrf-token" content="{{ csrf_token() }}">
-                            <span class="material-symbols-outlined">
-                                add
-                            </span>
-                        </button>
                     </div>
-                </div>
-            @endforeach
-
+                @endforeach
+            </div>
             
-            <a class="button remove" href="">
-                Create List
-            </a>
-
+            <div class="inner">
+                <button class="button create">
+                    Create List
+                </button>
+            </div>
         </div>  
 
         <!-- Container QR Code -->
@@ -89,7 +81,6 @@
                 {!! $qrCode !!}
             </div>
         </div>
-        
     </main>
 
     <!-- Godo Scripts -->

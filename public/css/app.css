@@ -176,8 +176,7 @@ header {
     align-items: center;
 }
 
-.button.remove,
-.button.menu-item {
+.button.remove, .button.menu-item, .button.create {
     text-decoration: none;
     border: solid 1px #80808045;
     padding: 4px;
@@ -188,6 +187,12 @@ header {
     justify-content: center;
     display: flex;
     color: #80808082;
+    height: 32px;
+}
+
+.button.create {
+    width: -webkit-fill-available;
+    height: 32px;
 }
 
 .button.remove:hover,
