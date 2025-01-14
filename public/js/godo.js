@@ -40,6 +40,9 @@ function RequestHandler(action = '', data = {}) {
         case 'listCreate':
             url = '/create/list';
             break;
+        case 'listDelete':
+            url = '/delete/list';
+            break;
     }
 
     // 
@@ -134,12 +137,12 @@ function ListController (element, event, request) {
 
     //
     if (request == 'listDelete') {
-        let listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
-        console.log('Should delete this: ' + listId);
+        data.listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
+        console.log('Should delete this: ' + data);
     }
 
     // Trigger action through Axios
-    // RequestHandler(request, data);
+    RequestHandler(request, data);
 
 }
 

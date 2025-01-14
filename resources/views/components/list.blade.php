@@ -5,7 +5,7 @@
 ])
 
 <!-- Default List -->
-<div class="inner">
+<div class="inner" data-list-id="{{ $id }}">
     <header>
         <h2 contenteditable>{{ $title }}</h2>
         <button class="button remove" data-list-id="{{ $id }}">

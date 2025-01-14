@@ -22,9 +22,10 @@
 
         <!-- Container of List Category -->
         <div class="lists">
+            <meta name="csrf-token" content="{{ csrf_token() }}">
             <div class="lists-wrapper">
                 @foreach($user->lists as $list)
-                    <div class="inner">
+                    <div class="inner" data-list-id="{{ $list->id }}">
 
                         <!-- Header of List Category -->
                         <header>
@@ -58,7 +59,6 @@
                                 class="list-item placeholder-add create-list-item-button"
                                 data-list="Default List"
                                 data-listid="1">
-                                <meta name="csrf-token" content="{{ csrf_token() }}">
                                 <span class="material-symbols-outlined">
                                     add
                                 </span>
