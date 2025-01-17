@@ -1,207 +1,133 @@
 /**
- * 
  * Godo To-Do List Web Application
  * Edward Gough
- * 07/01/2025
- * 
+ * 17/01/2025
  */
 
-
-// Development Log to show initialised scripts
-console.log('Godo To-Do List Web Application - 07/01/2025');
-
+console.log('Godo To-Do List Web Application - Initialized');
 
 /**
- * Function: RequestHandler
- * Description: Send task data to Laravel controller using Axios
- * @param {string} action - Either 'add' or 'remove'
- * @param {string} taskName - The name of the task (required for 'add')
- * @param {int} taskId - The ID of the task (required for 'remove')
+ * Sends task data to Laravel controllers using Axios.
+ * @param {string} action - Action type ('add', 'remove', etc.).
+ * @param {object} data - Payload to send to the server.
  */
-function RequestHandler(action = '', data = {}) {
+const RequestHandler = (action = '', data = {}) => {
+    const urls = {
+        listItemCreate: '/create/list-item',
+        listItemDelete: '/delete/list-item',
+        listItemEdit: '/edit/list-item',
+        listItemStatus: '/status/list-item',
+        listCreate: '/create/list',
+        listDelete: '/delete/list',
+        listEdit: '/edit/list',
+    };
 
-    // 
-    let url;
-
-    // 
-    switch (action) {
-        case 'listItemCreate':
-            url = '/create/list-item';
-            break;
-        case 'listItemDelete':
-            url = '/delete/list-item';
-            break;
-        case 'listItemEdit':
-            url = '/edit/list-item';
-            break;
-        case 'listItemStatus':
-            url = '/status/list-item';
-            break;
-        case 'listCreate':
-            url = '/create/list';
-            break;
-        case 'listDelete':
-            url = '/delete/list';
-            break;
-        case 'listEdit':
-            url = '/edit/list';
-            break;
+    const url = urls[action];
+    if (!url) {
+        console.error('Invalid action:', action);
+        return;
     }
 
-    // 
     axios.post(url, data, {
         headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
     })
-    .then(response => {
-        ResponseHandler(response);
-    })
-    .catch(error => {
-        console.error('Error:', error.response);
-    });
-}
+    .then(response => ResponseHandler(response))
+    .catch(error => console.error('Error:', error.response));
+};
 
 /**
- * Function: ResponseHandler
- * Description: ...
- * @param {object} data
+ * Handles server responses and updates the DOM accordingly.
+ * @param {object} response - Server response.
  */
-function ResponseHandler(data = {}) {
-    data.data.reaction.forEach(function(item) {
+const ResponseHandler = (response = {}) => {
+    response.data.reaction.forEach(({ type, tag, value }) => {
+        const element = document.querySelector(tag);
 
-        // Push HTML into the end of a section
-        if (item.type == 'insertAdjacentHTML') {
-            document.querySelector(item.tag).insertAdjacentHTML('beforeend', item.value);
+        switch (type) {
+            case 'insertAdjacentHTML':
+                element?.insertAdjacentHTML('beforeend', value);
+                break;
+            case 'remove':
+                element?.remove();
+                break;
+            case 'console':
+                console.log(value);
+                break;
+            case 'replaceElement':
+                if (element) element.outerHTML = value;
+                break;
         }
-
-        // Remove HTML element from DOM
-        if (item.type == 'remove') {
-            document.querySelector(item.tag).remove();
-        }
-
-        // Display console log
-        if (item.type == 'console') {
-            console.log(item.value);
-        }
-
-        // Replace element with new HTML
-        if (item.type == 'replaceElement') {
-            document.querySelector(item.tag).outerHTML = item.value;
-        }
-
     });
-}
-
+};
 
 /**
- * Function: ListItemController
- * Description: ...
- * @param {object} element
- * @param {object} event
- * @param {string} request
+ * Handles actions for individual list items.
+ * @param {HTMLElement} element - Triggering element.
+ * @param {Event} event - Event object.
+ * @param {string} action - Action type (e.g., 'listItemDelete').
  */
-function ListItemController (element, event, request) {
-    
+const ListItemController = (element, event, action) => {
+    const listId = element.closest('[data-list-id]')?.dataset.listId;
+    const listItemElement = event.target.closest('[data-list-item-id]');
+    const listItemId = listItemElement?.dataset.listItemId;
 
-    // Attribute collection for selected list item
-    let listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
-    let listItemElement = event.target.closest('[data-list-item-id]');
-    let listItemId = listItemElement?.getAttribute('data-list-item-id');
-    let data = {
-        listId: listId,
-        listItemId: listItemId
-    };
+    const data = { listId, listItemId };
 
-    // Additional information required for list item edit action
-    if (request == 'listItemEdit') {
-        data.title = listItemElement.querySelector('[data-content="list-item-title"]')?.textContent.trim();
-        data.content = listItemElement.querySelector('[data-content="list-item-content"]')?.textContent.trim();
+    if (action === 'listItemEdit') {
+        data.title = listItemElement?.querySelector('[data-content="list-item-title"]')?.textContent.trim();
+        data.content = listItemElement?.querySelector('[data-content="list-item-content"]')?.textContent.trim();
+    } else if (action === 'listItemStatus') {
+        data.status = element?.dataset.status;
     }
 
-    // Addtional information requried for list item status change
-    else if (request == 'listItemStatus') {
-        data.status = element?.getAttribute('data-status');
-        
-    }
-
-    // Trigger action through Axios
-    RequestHandler(request, data);
-
-}
+    RequestHandler(action, data);
+};
 
 /**
- * 
+ * Handles actions for entire lists.
+ * @param {HTMLElement} element - Triggering element.
+ * @param {Event} event - Event object.
+ * @param {string} action - Action type (e.g., 'listDelete').
  */
-function ListController (element, event, request) {
-    
-    //
-    let listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
-    let data = {
-        listId: listId
-    };
+const ListController = (element, event, action) => {
+    const listId = element.closest('[data-list-id]')?.dataset.listId;
+    const data = { listId };
 
-    // Additional information required for list item edit action
-    if (request == 'listEdit') {
+    if (action === 'listEdit') {
         data.title = element?.textContent.trim();
     }
 
-    // Trigger action through Axios
-    RequestHandler(request, data);
+    RequestHandler(action, data);
+};
 
-}
+// Unified event listener for click actions
+document.body.addEventListener('click', event => {
+    const handlers = [
+        { selector: '.delete-list-item-button', action: 'listItemDelete', controller: ListItemController },
+        { selector: '.create-list-item-button', action: 'listItemCreate', controller: ListItemController },
+        { selector: '[data-content="complete-item"]', action: 'listItemStatus', controller: ListItemController },
+        { selector: '.create', action: 'listCreate', controller: ListController },
+        { selector: '.remove', action: 'listDelete', controller: ListController },
+    ];
 
-
-// Attaching the event listener to the document (or a stable parent)
-document.body.addEventListener('click', function(event) {
-    
-
-    // --- List Items
-    // Check if the clicked element matches the selector
-    if (event.target.closest('.delete-list-item-button')) {
-        ListItemController(event.target, event, 'listItemDelete');
-    }
-
-    // Check if the clicked element matches the selector
-    if (event.target.closest('.create-list-item-button')) {
-        ListItemController(event.target, event, 'listItemCreate');
-    }
-
-    // Check if the clicked element matches the selector
-    if (event.target.closest('[data-content="complete-item"]')) {
-        ListItemController(event.target, event, 'listItemStatus');
-    }
-
-
-    // --- Lists
-    // Check if the clicked element matches the selector
-    if (event.target.closest('.create')) {
-        ListController(event.target, event, 'listCreate');
-    }
-
-    // Check if the clicked element matches the selector
-    if (event.target.closest('.remove')) {
-        ListController(event.target, event, 'listDelete');
-    }
-
+    handlers.forEach(({ selector, action, controller }) => {
+        const element = event.target.closest(selector);
+        if (element) controller(element, event, action);
+    });
 });
 
+// Unified event listener for focusout actions
+document.body.addEventListener('focusout', event => {
+    const handlers = [
+        { selector: '[data-content="list-item-title"]', action: 'listItemEdit', controller: ListItemController },
+        { selector: '[data-content="list-item-content"]', action: 'listItemEdit', controller: ListItemController },
+        { selector: '[data-content="list-title"]', action: 'listEdit', controller: ListController },
+    ];
 
-
-// Attaching the event listener to the document (or a stable parent)
-document.body.addEventListener('focusout', function(event) {
-    
-    // Elements for List Item Update
-    let listItemTitleEdit = event.target.matches('[data-content="list-item-title"]');
-    let listItemContentEdit = event.target.matches('[data-content="list-item-content"]');
-    if (listItemTitleEdit || listItemContentEdit) {
-        ListItemController(event.target, event, 'listItemEdit');
-    }
-
-    // Elements for List Update
-    let listTitleEdit = event.target.matches('[data-content="list-title"]');
-    if (listTitleEdit) {
-        ListController(event.target, event, 'listEdit');
-    }
-
+    handlers.forEach(({ selector, action, controller }) => {
+        const element = event.target.matches(selector) ? event.target : null;
+        if (element) controller(element, event, action);
+    });
 });
