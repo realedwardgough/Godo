@@ -29,7 +29,7 @@
 
                         <!-- Header of List Category -->
                         <header>
-                            <h2 contenteditable>{{ $list->title }}</h2>
+                            <h2 contenteditable data-content="list-title">{{ $list->title }}</h2>
                             <button class="button remove" data-list-id="{{ $list->id }}">
                                 Remove
                             </button>

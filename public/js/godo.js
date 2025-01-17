@@ -43,6 +43,9 @@ function RequestHandler(action = '', data = {}) {
         case 'listDelete':
             url = '/delete/list';
             break;
+        case 'listEdit':
+            url = '/edit/list';
+            break;
     }
 
     // 
@@ -133,12 +136,14 @@ function ListItemController (element, event, request) {
 function ListController (element, event, request) {
     
     //
-    let data = {};
+    let listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
+    let data = {
+        listId: listId
+    };
 
-    //
-    if (request == 'listDelete') {
-        data.listId = element.closest('[data-list-id]')?.getAttribute('data-list-id');
-        console.log('Should delete this: ' + data);
+    // Additional information required for list item edit action
+    if (request == 'listEdit') {
+        data.title = element?.textContent.trim();
     }
 
     // Trigger action through Axios
@@ -185,9 +190,18 @@ document.body.addEventListener('click', function(event) {
 
 // Attaching the event listener to the document (or a stable parent)
 document.body.addEventListener('focusout', function(event) {
-    let titleEdit = event.target.matches('[data-content="list-item-title"]');
-    let contentEdit = event.target.matches('[data-content="list-item-content"]');
-    if (titleEdit || contentEdit) {
+    
+    // Elements for List Item Update
+    let listItemTitleEdit = event.target.matches('[data-content="list-item-title"]');
+    let listItemContentEdit = event.target.matches('[data-content="list-item-content"]');
+    if (listItemTitleEdit || listItemContentEdit) {
         ListItemController(event.target, event, 'listItemEdit');
     }
+
+    // Elements for List Update
+    let listTitleEdit = event.target.matches('[data-content="list-title"]');
+    if (listTitleEdit) {
+        ListController(event.target, event, 'listEdit');
+    }
+
 });

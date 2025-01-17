@@ -154,4 +154,75 @@ class Lists extends Controller
         ]);
     }
 
+    /**
+     * Edit list and generates the html
+     * via the x component which is also used on the route view
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     * 
+     */
+    public function Edit(Request $request) {
+        
+        
+        // Store localised unique session id
+        $uniqueId = session('unique_session_id');
+        
+        // Check if unique session id hasn't been set
+        if (empty($uniqueId)) {
+            return response()->json([
+                'status' => 2,
+                'message' => 'User session has not been found.'
+            ]);
+        }
+
+        // Handle unique session id and fetch user information
+        $user = User::where('unique', $uniqueId)
+                ->first();
+
+        // User has not been found from the unique session id
+        if (empty($user)) {
+            return response()->json([
+                'status' => 2,
+                'message' => 'User has not been found.'
+            ]);
+        }
+
+        // Search for the list item which is to be deleted and confirm user has access to this
+        $list = ListModel::where('id', $request->listId)
+                ->where('user_id', $user->id)
+                ->first();
+
+
+        // Access missing and must throw error and show console message
+        if (!$list) {
+            return response()->json([
+                'status' => 2,
+                'message' => 'Access Denied',
+                'reaction' => [
+                    0 => [
+                        'type' => 'console',
+                        'value' => 'Access Denied'
+                    ]
+                ]
+            ]);
+        }
+
+        // Found and not returned early, list is applicable for deletion
+        $list->title = $request->title;
+        $list->save();
+
+        // Return successfully with the x compontent removed from dom
+        return response()->json([
+            'status' => 1,
+            'message' => 'List element updated.',
+            'reaction' => [
+                0  => [
+                    'type' => 'console',
+                    'value' => 'List element updated.'
+                ]
+            ]
+        ]);
+    }
+
 }
