@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Lists as ListModel;
+use App\Models\ListItems as ListItem;
 
 class Lists extends Controller
 {
@@ -107,6 +108,8 @@ class Lists extends Controller
             ]);
         }
 
+        // Delete all list items.
+        ListItem::where('list_id', $list->id)->delete();
         $list->delete();
 
         return response()->json([
@@ -169,4 +172,5 @@ class Lists extends Controller
             ],
         ]);
     }
+
 }
