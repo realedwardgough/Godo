@@ -131,7 +131,8 @@ class ListItems extends Controller
             ]);
         }
 
-        // Found and not returned early, list is applicable for deletion
+        // Delete all list items and then the list itself
+        ListItem::where('list_id', $list->id)->delete();
         $listItem->delete();
 
         // Return successfully with the x compontent removed from dom
