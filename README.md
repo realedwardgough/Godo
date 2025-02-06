@@ -7,6 +7,11 @@ GoDo is a simple and efficient to-do list web application built with Laravel. It
 
 ---
 
+# Versions
+- v1.0.0
+
+---
+
 ## Features
 
 ### Multiple Lists
